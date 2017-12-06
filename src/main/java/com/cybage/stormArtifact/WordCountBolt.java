@@ -10,15 +10,19 @@ import org.apache.storm.topology.base.BaseRichBolt;
 import org.apache.storm.tuple.Fields;
 import org.apache.storm.tuple.Tuple;
 import org.apache.storm.tuple.Values;
-//jfgshdgfjdf
+
 public class WordCountBolt extends BaseRichBolt{
 	private OutputCollector collector;
+	
 	private HashMap<String, Long> counts = null;
+	
+	// instantiate an instance of HashMap<String, Long> that will store all the words and their corresponding counts.
 	public void prepare(Map config, TopologyContext context,
 			OutputCollector collector) {
 		this.collector = collector;
 		this.counts = new HashMap<String, Long>();
 	}
+	//logic to count the words
 	public void execute(Tuple tuple) {
 		String word = tuple.getStringByField("word");
 		Long count = this.counts.get(word);
@@ -29,6 +33,7 @@ public class WordCountBolt extends BaseRichBolt{
 		this.counts.put(word, count);
 		this.collector.emit(new Values(word, count));
 	}
+	//It declares class will emit a single stream of tuples, each containing field ("word", "corresponding count").
 	public void declareOutputFields(OutputFieldsDeclarer declarer) {
 		declarer.declare(new Fields("word", "count"));
 	}

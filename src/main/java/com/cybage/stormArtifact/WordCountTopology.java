@@ -17,23 +17,30 @@ public class WordCountTopology {
 		SplitSentenceBolt splitBolt = new SplitSentenceBolt();
 		WordCountBolt countBolt = new WordCountBolt();
 		ReportBolt reportBolt = new ReportBolt();
+		
+		
 		TopologyBuilder builder = new TopologyBuilder();
+		
+		//defining new spout to the topology 
 		builder.setSpout(SENTENCE_SPOUT_ID, spout);
-		// SentenceSpout --> SplitSentenceBolt
+		
+		//defining new bolt to the topology 
+		//ID is the id of this component. This id is referenced by other components that want to consume this bolt's outputs
 		builder.setBolt(SPLIT_BOLT_ID, splitBolt)
 		.shuffleGrouping(SENTENCE_SPOUT_ID);
-		// SplitSentenceBolt --> WordCountBolt
+		
+
 		builder.setBolt(COUNT_BOLT_ID, countBolt)
 		.fieldsGrouping(SPLIT_BOLT_ID, new Fields("word"));
-		// WordCountBolt --> ReportBolt
+		
 		builder.setBolt(REPORT_BOLT_ID, reportBolt)
 		.globalGrouping(COUNT_BOLT_ID);
+		
 		Config config = new Config();
 		LocalCluster cluster = new LocalCluster();
 		cluster.submitTopology(TOPOLOGY_NAME, config, builder.createTopology());
 		Utils.sleep(20000);
 		cluster.killTopology(TOPOLOGY_NAME);
-		//Utils.sleep(10000);
 		cluster.shutdown();
 	}
 }

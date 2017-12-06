@@ -14,6 +14,8 @@ import org.apache.storm.tuple.Tuple;
 
 public class ReportBolt extends BaseRichBolt {
 	private HashMap<String, Long> counts = null;
+	
+	// instantiate an instance of HashMap<String, Long> that will store all the words and their corresponding counts.
 	public void prepare(Map config, TopologyContext context,
 			OutputCollector collector) {
 		this.counts = new HashMap<String, Long>();
@@ -27,6 +29,7 @@ public class ReportBolt extends BaseRichBolt {
 	public void declareOutputFields(OutputFieldsDeclarer declarer) {
 		// this bolt does not emit anything
 	}
+	//Storm calls this method when a bolt is about to be shutdown.
 	public void cleanup() {
 		System.out.println("--- FINAL COUNTS ---");
 		List<String> keys = new ArrayList<String>();
